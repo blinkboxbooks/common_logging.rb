@@ -38,4 +38,27 @@ context Blinkbox::CommonLogging do
       expect(GELF::Notifier.last_hash).to eq(log_hash)
     end
   end
+
+  describe "#from_config" do
+    it "must accept the logger tree from a config file" do
+      config = {
+        "level" => "INFO",
+        "udp" => {
+          "host" => "127.0.0.2",
+          "port" => 12345
+        },
+        "gelf" => {
+          "facility" => "my_facility",
+          "maxChunkSize" => 8100
+        }
+      }
+      logger = described_class.from_config(config)
+
+      expect(logger.host).to eq(config["udp"]["host"])
+      expect(logger.port).to eq(config["udp"]["port"])
+      expect(logger.default_options["facility"]).to eq(config["gelf"]["facility"])
+      expect(logger.max_chunk_size).to eq(config["gelf"]["maxChunkSize"])
+      expect(logger.level).to eq(GELF.const_get(config["level"].upcase))
+    end
+  end
 end
