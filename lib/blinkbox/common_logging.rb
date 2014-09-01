@@ -33,10 +33,14 @@ module Blinkbox
         host: hash[:udp][:host],
         port: hash[:udp][:port],
         facility: hash[:gelf][:facility],
-        max_size: hash[:gelf][:maxChunkSize] || 8192
+        max_size: hash[:gelf][:maxChunkSize]
       )
-      logger.level = GELF.const_get(hash[:level].upcase)
+      logger.level = GELF.const_get(hash[:level].upcase) rescue GELF::INFO
       logger
+    end
+
+    def facility_version=(facility_version)
+      @facility_version = facility_version
     end
   end
 end
