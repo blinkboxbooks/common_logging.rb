@@ -38,9 +38,5 @@ module Blinkbox
       logger.level = GELF.const_get(hash[:level].upcase) rescue GELF::INFO
       logger
     end
-
-    def facility_version=(facility_version)
-      @facility_version = facility_version
-    end
   end
 end
