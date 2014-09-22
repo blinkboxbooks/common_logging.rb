@@ -30,10 +30,10 @@ module Blinkbox
     # @return [CommonLogging]
     def self.from_config(hash)
       logger = new(
-        host: hash[:udp][:host],
-        port: hash[:udp][:port],
-        facility: hash[:gelf][:facility],
-        max_size: hash[:gelf][:maxChunkSize]
+        host: hash[:'udp.host'],
+        port: hash[:'udp.port'],
+        facility: hash[:'gelf.facility'],
+        max_size: hash[:'gelf.maxChunkSize']
       )
       logger.level = GELF.const_get(hash[:level].upcase) rescue GELF::INFO
       logger
