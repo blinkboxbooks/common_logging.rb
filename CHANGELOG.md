@@ -1,5 +1,13 @@
 # Change log
 
+## 0.3.1 ([#4](https://git.mobcastdev.com/Platform/common_logging.rb/pull/4) 2014-09-22 13:53:00)
+
+Ensure from_config actually works from a config!
+
+### Bugfix
+
+- `.from_config` now expects a shallow hash (with dots in keys) just as common_config.rb provides.
+
 ## 0.3.0 ([#3](https://git.mobcastdev.com/Platform/common_logging.rb/pull/3) 2014-08-14 16:45:39)
 
 Allow adding of service version to default params
