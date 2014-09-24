@@ -1,4 +1,5 @@
 require "gelf"
+$stderr.puts "Loaded live version"
 
 module Blinkbox
   class CommonLogging < GELF::Logger
@@ -37,6 +38,12 @@ module Blinkbox
       )
       logger.level = GELF.const_get(hash[:level].upcase) rescue GELF::INFO
       logger
+    end
+
+    private
+    def notify_with_level!(message_level, msg)
+      msg.extend(ExtraHashMethods).shallow! if msg.is_a?(Hash)
+      super
     end
   end
 end
