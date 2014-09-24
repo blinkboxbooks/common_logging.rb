@@ -18,6 +18,22 @@ context Blinkbox::ExtraHashMethods do
       end
     end
 
+    it "must reduce a two level deep hash with symbol keys" do
+      hash = {
+        firstA: {
+          second: "firstA.second"
+        },
+        firstB: :firstB
+      }
+
+      output = hash.extend(described_class).shallow!
+
+      expect(output).to eql(true)
+      hash.each do |key, value|
+        expect(key).to eq(value)
+      end
+    end
+
     it "must not change a shallow hash" do
       hash = {
         'firstA' => "firstA",

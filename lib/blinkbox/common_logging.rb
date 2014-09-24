@@ -1,4 +1,5 @@
 require "gelf"
+require "blinkbox/extra_hash_methods"
 $stderr.puts "Loaded live version"
 
 module Blinkbox
@@ -43,7 +44,8 @@ module Blinkbox
     private
     def notify_with_level!(message_level, msg)
       msg.extend(ExtraHashMethods).shallow! if msg.is_a?(Hash)
-      super
+      p msg
+      super(message_level, msg)
     end
   end
 end
