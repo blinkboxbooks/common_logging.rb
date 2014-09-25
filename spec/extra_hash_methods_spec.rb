@@ -75,5 +75,27 @@ context Blinkbox::ExtraHashMethods do
       output = hash.extend(described_class).shallow!
       expect(output).to eql(["firstA.second"])
     end
+
+    it "must reduce a three level deep hash" do
+      hash = {
+        'firstA' => {
+          'secondA' => {
+            'third' => "firstA.secondA.third"
+          },
+          'secondB' => "firstA.secondB"
+        },
+        'firstB' => "firstB"
+      }
+
+      expected = {
+        'firstA.secondA.third' => "firstA.secondA.third",
+        'firstA.secondB' => "firstA.secondB",
+        'firstB' => "firstB"
+      }
+
+      output = hash.extend(described_class).shallow!
+
+      expect(hash).to eql(expected)
+    end
   end
 end

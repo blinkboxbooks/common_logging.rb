@@ -51,22 +51,22 @@ module Blinkbox
     # @return [Boolean] Whether any keys were changed
     def shallow!(join = ".")
       shallowed = false
-      self.keys.each do |k|
-        if self[k].is_a?(Hash)
-          shallowed = shallowed || true
-          v = self.delete(k)
-          v.each do |sub_k, sub_v|
-            new_key = [k, sub_k].join(join)
-            if self.has_key?(new_key)
-              shallowed = [] unless shallowed.is_a?(Array)
-              shallowed.push(new_key)
-            end
-            self[new_key] = if sub_v.is_a?(Hash)
-              sub_v.extend(ExtraHashMethods)
-              sub_v.shallow!(join)
-            else
-              sub_v
-            end
+      keys = self.keys.select { |k| self[k].is_a?(Hash) }
+      while (k = keys.shift) do
+        shallowed = shallowed || true
+        v = self.delete(k)
+        v.each do |sub_k, sub_v|
+          new_key = [k, sub_k].join(join)
+          if self.has_key?(new_key)
+            shallowed = [] unless shallowed.is_a?(Array)
+            shallowed.push(new_key)
+          end
+          self[new_key] = if sub_v.is_a?(Hash)
+            sub_v.extend(ExtraHashMethods).shallow!(join)
+            keys.push(new_key)
+            sub_v
+          else
+            sub_v
           end
         end
       end
