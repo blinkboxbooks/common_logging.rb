@@ -1,6 +1,5 @@
 require "gelf"
 require "blinkbox/extra_hash_methods"
-$stderr.puts "Loaded live version"
 
 module Blinkbox
   class CommonLogging < GELF::Logger
@@ -43,13 +42,7 @@ module Blinkbox
 
     private
     def notify_with_level!(message_level, msg)
-      p msg
-      if msg.is_a?(Hash)
-        msg.extend(ExtraHashMethods)
-        p msg
-        msg.shallow!
-      end
-      p msg
+      msg.extend(ExtraHashMethods).shallow! if msg.is_a?(Hash)
       super(message_level, msg)
     end
   end
