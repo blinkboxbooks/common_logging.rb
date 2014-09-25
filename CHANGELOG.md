@@ -1,5 +1,29 @@
 # Change log
 
+## 0.4.0 ([#5](https://git.mobcastdev.com/Platform/common_logging.rb/pull/5) 2014-09-25 10:46:32)
+
+Shallow hashes
+
+### New feature
+
+- Graylog can't deal with nested hashes, so I've added functionality to flatten deep hashes given to the logging methods into dot-separated shallow ones:
+
+```ruby
+{
+  a: {
+    b: "will become a.b"
+  }
+}
+```
+
+becomes
+
+```ruby
+{
+  "a.b" => "will become a.b"
+}
+```
+
 ## 0.3.1 ([#4](https://git.mobcastdev.com/Platform/common_logging.rb/pull/4) 2014-09-22 13:53:00)
 
 Ensure from_config actually works from a config!
