@@ -9,7 +9,7 @@ module Blinkbox
       validity_issues.push("port") unless port.is_a?(Integer)
       validity_issues.push("facility") unless facility.is_a?(String)
       validity_issues.push("max_size") unless max_size.is_a?(Integer)
-      raise ArgumentError, "Cannot start the logger, the following settings weren't valid: #{validity_issues.join(", ")}" if validity_issues.any?
+      raise ArgumentError, "Cannot start the logger, the following settings weren't valid: #{validity_issues.join(", ")}" if !validity_issues.empty?
 
       options = { facility: facility }
       options[:facilityVersion] = facility_version unless facility_version.nil?
