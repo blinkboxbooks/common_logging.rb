@@ -56,5 +56,26 @@ context Blinkbox::CommonLogging do
       expect(logger.max_chunk_size).to eq(config[:'gelf.maxChunkSize'])
       expect(logger.level).to eq(GELF.const_get(config[:level].upcase))
     end
+
+    it "must raise an ArgumentError if any settings are invalid, listing problem values" do
+      config = {
+        :level               => "INFO",
+        :'udp.host'          => "127.0.0.2",
+        :'udp.port'          => 12345,
+        :'gelf.facility'     => "my_facility",
+        :'gelf.maxChunkSize' => 8100
+      }
+
+      %i{udp.host udp.port gelf.facility gelf.maxChunkSize}.each do |invalid_config|
+        begin
+          partially_invalid_config = config.dup
+          partially_invalid_config[invalid_config] = nil
+          described_class.from_config(partially_invalid_config)
+          expect("this").to_not be("reached"), "#from_config didn't raise an ArgumentError"
+        rescue ArgumentError => e
+          expect(e.message).to include(invalid_config.to_s)
+        end
+      end
+    end
   end
 end
