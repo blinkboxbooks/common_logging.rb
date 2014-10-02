@@ -71,7 +71,7 @@ context Blinkbox::CommonLogging do
           partially_invalid_config = config.dup
           partially_invalid_config[invalid_config] = nil
           described_class.from_config(partially_invalid_config)
-          expect("this").to_not be("executed")
+          expect("this").to_not be("reached"), "#from_config didn't raise an ArgumentError"
         rescue ArgumentError => e
           expect(e.message).to include(invalid_config.to_s)
         end
