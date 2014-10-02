@@ -1,5 +1,15 @@
 # Change log
 
+## 0.4.1 ([#6](https://git.mobcastdev.com/Platform/common_logging.rb/pull/6) 2014-10-02 08:31:38)
+
+Validation of values
+
+### Improvements
+
+- Validates input from config and raises an `ArgumentError` if anything is unusable.
+- Will list out *all* problematic variables so fixing the config is faster.
+- Translates the named invalid keys between `from_config` and `new` so that the error message makes sense for the code being used.
+
 ## 0.4.0 ([#5](https://git.mobcastdev.com/Platform/common_logging.rb/pull/5) 2014-09-25 10:46:32)
 
 Shallow hashes
