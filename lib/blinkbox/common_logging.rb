@@ -4,6 +4,13 @@ require "blinkbox/extra_hash_methods"
 module Blinkbox
   class CommonLogging < GELF::Logger
     def initialize(host: "localhost", port: 12201, facility: $0, max_size: 8192, facility_version: nil)
+      validity_issues = []
+      validity_issues.push("host") unless host.is_a?(String)
+      validity_issues.push("port") unless port.is_a?(Integer)
+      validity_issues.push("facility") unless facility.is_a?(String)
+      validity_issues.push("max_size") unless max_size.is_a?(Integer)
+      raise ArgumentError, "Cannot start the logger, the following settings weren't valid: #{validity_issues.join(", ")}" if validity_issues.any?
+
       options = { facility: facility }
       options[:facilityVersion] = facility_version unless facility_version.nil?
       super(host, port, max_size, options)
@@ -30,18 +37,21 @@ module Blinkbox
     # @option hash ["DEBUG","INFO","WARN","ERROR","FATAL"] :level ("INFO") The level below which messages will not be sent to Graylog.
     # @return [CommonLogging]
     def self.from_config(hash)
-      validity_issues = []
-      validity_issues.push("udp.host") unless hash[:'udp.host'].is_a?(String)
-      validity_issues.push("udp.port") unless hash[:'udp.port'].is_a?(Integer)
-      validity_issues.push("gelf.facility") unless hash[:'gelf.facility'].is_a?(String)
-      validity_issues.push("gelf.maxChunkSize") unless hash[:'gelf.maxChunkSize'].is_a?(Integer)
-      raise ArgumentError, "Cannot start the logger, the following settings weren't valid: #{validity_issues.join(", ")}" if validity_issues.any?
-      logger = new(
-        host: hash[:'udp.host'],
-        port: hash[:'udp.port'],
-        facility: hash[:'gelf.facility'],
-        max_size: hash[:'gelf.maxChunkSize']
-      )
+      mapping = {
+        host: :'udp.host',
+        port: :'udp.port',
+        facility: :'gelf.facility',
+        max_size: :'gelf.maxChunkSize'
+      }
+      begin
+        logger = new(Hash[mapping.map { |k, v| [k, hash[v]] }])
+      rescue ArgumentError => e
+        msg = e.message
+        mapping.each do |k, v|
+          msg.sub!(k.to_s, v.to_s)
+        end
+        raise e.class, msg
+      end
       logger.level = GELF.const_get(hash[:level].upcase) rescue GELF::INFO
       logger
     end
