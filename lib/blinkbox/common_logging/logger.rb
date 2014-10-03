@@ -1,6 +1,5 @@
 require "gelf"
 require "logger"
-require "blinkbox/utilities/extra_hash_methods"
 
 module Blinkbox
   class CommonLogging < GELF::Logger
