@@ -40,10 +40,11 @@ module Blinkbox
     # @return [CommonLogging]
     def self.from_config(hash)
       mapping = {
-        host: :'udp.host',
-        port: :'udp.port',
-        facility: :'gelf.facility',
-        max_size: :'gelf.maxChunkSize'
+        host:            :'udp.host',
+        port:            :'udp.port',
+        facility:        :'gelf.facility',
+        max_size:        :'gelf.maxChunkSize',
+        echo_to_console: :'logging.console.enabled'
       }
       begin
         logger = new(Hash[mapping.map { |k, v| [k, hash[v]] }])
