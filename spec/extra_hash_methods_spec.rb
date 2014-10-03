@@ -1,4 +1,4 @@
-require "blinkbox/extra_hash_methods"
+require "blinkbox/utilities/extra_hash_methods"
 
 context Blinkbox::ExtraHashMethods do
   describe "#flatten_hash" do
