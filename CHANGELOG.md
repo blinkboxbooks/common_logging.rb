@@ -1,5 +1,14 @@
 # Change log
 
+## 0.5.0 ([#7](https://git.mobcastdev.com/Platform/common_logging.rb/pull/7) 2014-10-03 15:02:14)
+
+Log to console as well as Graylog
+
+### New features
+
+- Setting `logging.console.enabled` to `true` will now output to stdout as well as graylog.
+- Slight refactoring of code in files.
+
 ## 0.4.1 ([#6](https://git.mobcastdev.com/Platform/common_logging.rb/pull/6) 2014-10-02 08:31:38)
 
 Validation of values
