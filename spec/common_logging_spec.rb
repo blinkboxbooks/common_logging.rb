@@ -21,6 +21,23 @@ context Blinkbox::CommonLogging do
         })
         expect(GELF::Notifier.last_hash).to eq(log_hash)
       end
+
+      it "must also log #{level} messages to stdout if if enabled" do
+        log_string = "Test #{level} string with console output"
+        log_hash = expected_hash({
+          short_message: log_string,
+          level: GELF.const_get(level.to_s.upcase)
+        })
+        common_logger = described_class.new(echo_to_console: true)
+        stdout_logger = common_logger.instance_variable_get(:'@stdout_logger')
+        expect(stdout_logger).to be_a(Logger)
+        stdout_logger = instance_double(Logger)
+        allow(stdout_logger).to receive(level.to_sym)
+        common_logger.instance_variable_set(:'@stdout_logger', stdout_logger)
+        common_logger.send(level, log_string)
+        expect(GELF::Notifier.last_hash).to eq(log_hash)
+        expect(stdout_logger).to have_received(level.to_sym).with(hash_including("short_message" => log_string))
+      end
     end
 
     it "must log exceptions at the error level" do
@@ -46,7 +63,8 @@ context Blinkbox::CommonLogging do
         :'udp.host'          => "127.0.0.2",
         :'udp.port'          => 12345,
         :'gelf.facility'     => "my_facility",
-        :'gelf.maxChunkSize' => 8100
+        :'gelf.maxChunkSize' => 8100,
+        :'console.enabled'   => true
       }
       logger = described_class.from_config(config)
       
@@ -55,6 +73,7 @@ context Blinkbox::CommonLogging do
       expect(logger.default_options["facility"]).to eq(config[:'gelf.facility'])
       expect(logger.max_chunk_size).to eq(config[:'gelf.maxChunkSize'])
       expect(logger.level).to eq(GELF.const_get(config[:level].upcase))
+      expect(logger.instance_variable_get(:'@stdout_logger')).to_not be_nil
     end
 
     it "must raise an ArgumentError if any settings are invalid, listing problem values" do

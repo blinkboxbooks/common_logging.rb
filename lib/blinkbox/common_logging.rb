@@ -1,9 +1,10 @@
+require "blinkbox/utilities/extra_hash_methods"
 require "gelf"
-require "blinkbox/extra_hash_methods"
+require "logger"
 
 module Blinkbox
   class CommonLogging < GELF::Logger
-    def initialize(host: "localhost", port: 12201, facility: $0, max_size: 8192, facility_version: nil)
+    def initialize(host: "localhost", port: 12201, facility: $0, max_size: 8192, facility_version: nil, echo_to_console: false)
       validity_issues = []
       validity_issues.push("host") unless host.is_a?(String)
       validity_issues.push("port") unless port.is_a?(Integer)
@@ -11,6 +12,19 @@ module Blinkbox
       validity_issues.push("max_size") unless max_size.is_a?(Integer)
       raise ArgumentError, "Cannot start the logger, the following settings weren't valid: #{validity_issues.join(", ")}" if !validity_issues.empty?
 
+      if echo_to_console
+        @stdout_logger = Logger.new(STDOUT)
+        @stdout_logger.formatter = proc do |severity, datetime, progname, msg|
+          # Using console output is only for live-debug, so we can strip the timestamp, progname
+          l = msg.dup
+          l.delete("facility")
+          l.delete(:facility)
+          log_msg = "#{severity[0..0]} #{l.delete("short_message")}#{l.delete(:short_message)}"
+          log_msg << " (#{l})" if l.any?
+          log_msg << "\n"
+          log_msg
+        end
+      end
       options = { facility: facility }
       options[:facilityVersion] = facility_version unless facility_version.nil?
       super(host, port, max_size, options)
@@ -38,10 +52,11 @@ module Blinkbox
     # @return [CommonLogging]
     def self.from_config(hash)
       mapping = {
-        host: :'udp.host',
-        port: :'udp.port',
-        facility: :'gelf.facility',
-        max_size: :'gelf.maxChunkSize'
+        host:            :'udp.host',
+        port:            :'udp.port',
+        facility:        :'gelf.facility',
+        max_size:        :'gelf.maxChunkSize',
+        echo_to_console: :'console.enabled'
       }
       begin
         logger = new(Hash[mapping.map { |k, v| [k, hash[v]] }])
@@ -58,6 +73,10 @@ module Blinkbox
 
     private
     def notify_with_level!(message_level, msg)
+      if @stdout_logger
+        level = GELF::Levels.constants[message_level].to_s.downcase.to_sym
+        @stdout_logger.send(level, msg)
+      end
       msg.extend(ExtraHashMethods).shallow! if msg.is_a?(Hash)
       super(message_level, msg)
     end
