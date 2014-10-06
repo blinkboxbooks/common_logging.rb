@@ -11,7 +11,19 @@ module Blinkbox
       validity_issues.push("max_size") unless max_size.is_a?(Integer)
       raise ArgumentError, "Cannot start the logger, the following settings weren't valid: #{validity_issues.join(", ")}" if !validity_issues.empty?
 
-      @stdout_logger = Logger.new(STDOUT) if echo_to_console
+      if echo_to_console
+        @stdout_logger = Logger.new(STDOUT)
+        @stdout_logger.formatter = proc do |severity, datetime, progname, msg|
+          # Using console output is only for live-debug, so we can strip the timestamp, progname
+          l = msg.dup
+          l.delete("facility")
+          l.delete(:facility)
+          log_msg = "#{severity[0..0]} #{l.delete("short_message")}#{l.delete(:short_message)}"
+          log_msg << " (#{l})" if l.any?
+          log_msg << "\n"
+          log_msg
+        end
+      end
       options = { facility: facility }
       options[:facilityVersion] = facility_version unless facility_version.nil?
       super(host, port, max_size, options)
@@ -43,7 +55,7 @@ module Blinkbox
         port:            :'udp.port',
         facility:        :'gelf.facility',
         max_size:        :'gelf.maxChunkSize',
-        echo_to_console: :'logging.console.enabled'
+        echo_to_console: :'console.enabled'
       }
       begin
         logger = new(Hash[mapping.map { |k, v| [k, hash[v]] }])
