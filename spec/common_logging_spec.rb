@@ -59,12 +59,12 @@ context Blinkbox::CommonLogging do
   describe "#from_config" do
     it "must accept the logger tree from a config file" do
       config = {
-        :level                     => "INFO",
-        :'udp.host'                => "127.0.0.2",
-        :'udp.port'                => 12345,
-        :'gelf.facility'           => "my_facility",
-        :'gelf.maxChunkSize'       => 8100,
-        :'logging.console.enabled' => true
+        :level               => "INFO",
+        :'udp.host'          => "127.0.0.2",
+        :'udp.port'          => 12345,
+        :'gelf.facility'     => "my_facility",
+        :'gelf.maxChunkSize' => 8100,
+        :'console.enabled'   => true
       }
       logger = described_class.from_config(config)
       
