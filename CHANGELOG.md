@@ -1,5 +1,17 @@
 # Change log
 
+## 0.5.1 ([#8](https://git.mobcastdev.com/Platform/common_logging.rb/pull/8) 2014-12-15 15:01:11)
+
+Changed level mapping to :direct
+
+### Bug fixes
+
+- Changed the level mapping to be `:direct` which means that
+`logger.error` causes an error level message in Graylog, `logger.warn`
+causes a warning level message, and so on. The default mappings mean
+that `logger.error` causes a warning level message, and `logger.warn`
+causes a notice level message which is nuts.
+
 ## 0.5.0 ([#7](https://git.mobcastdev.com/Platform/common_logging.rb/pull/7) 2014-10-03 15:02:14)
 
 Log to console as well as Graylog
