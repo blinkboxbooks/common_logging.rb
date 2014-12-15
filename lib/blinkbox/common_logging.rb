@@ -68,6 +68,7 @@ module Blinkbox
         raise e.class, msg
       end
       logger.level = GELF.const_get(hash[:level].upcase) rescue GELF::INFO
+      logger.level_mapping = :direct
       logger
     end
 
