@@ -5,9 +5,9 @@ rvm:
 deploy:
   provider: rubygems
   api_key:
-    secure: JZ75Bc6uZQTDNvpQHJiZ+AvmY8JgFjbMpfNzAAktxByd+kk/8dvRspMesWWRH1pCewyReBpPEMFih7FoJBUMAIIHYOG9Ixe8VRC8tvXqIOIabSovUmnd78f1JP5A9fv3CmFLmi1hctd6qi515z0WF93QrmU12Z/99m7PMaukics=
+    secure: Ea7TbVP/quleanxfwNu3U5L2jFOJg69Gnhmdya5zfsdxrW2TtN/qY6dlGdcXI0ln05qulwV18/6fLWBVGXF1Vzq8LmUmxkwFzmamBV5pEc97YdR5GMqrz6mAQFbS6RwrZO6jbR9OHXa763JXVhtBvwWcHPc/7HJNv31Y9NP2mX0=
   gem: blinkbox-common_logging
   on:
-    repo: blinkboxbooks/common_logging
+    repo: blinkboxbooks/common_logging.rb
     rvm: 2.1.2
     branch: master
