@@ -1,5 +1,13 @@
 # Change log
 
+## 0.5.2 (2015-01-29 12:13:21)
+
+Unknown graylog server hostname fix
+
+### Bug fixes
+
+- Monkey patch to allow execution of code when the given graylog server name is unresolvable.
+
 ## Open Source release (2015-01-28 14:11:21)
 
 Today we have decided to publish parts of our codebase on Github under the [MIT licence](LICENCE). The licence is very permissive, but we will always appreciate hearing if and where our work is used!
