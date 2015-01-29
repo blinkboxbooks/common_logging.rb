@@ -79,7 +79,11 @@ module Blinkbox
         @stdout_logger.send(level, msg)
       end
       msg.extend(ExtraHashMethods).shallow! if msg.is_a?(Hash)
-      super(message_level, msg)
+      begin
+        super(message_level, msg)
+      rescue SocketError
+        # Cannot send data to unknown host, ignoring
+      end
     end
   end
 end
